@@ -1,18 +1,24 @@
-import mysql
+import mysql.connector
+import self
 
-Conexion = mysql.connector.connect(
-    host ="localhost",
-    user ="root",
-    passwd = "",
-    dabatase ="AhorcadoPython",
-    port = "3306"
 
-)
+class ConexionBD:
+    def __init__(self):
+        self.con = mysql.connector.connect(
+        host ="localhost",
+        user ="root",
+        passwd = "",
+        dabatase ="AhorcadoSQL",
+        port = "3306"
+        )
 
-cursor = Conexion.cursor()
+self.cursor = self.con.cursor()
 
-micursor = Conexion.cursor()
+def Consulta (self, consulta, parametros=None):
+    self.cursor.execute(consulta, parametros or ())
+    return self.cursor.fetchall()
 
-#micursor.execute("SELECT * FROM Clientes")
 
-print(micursor.fetchall())
+def Desconectar (self):
+    self.cursor.close()
+    self.conn.close()
