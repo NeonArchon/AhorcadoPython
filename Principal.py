@@ -3,6 +3,7 @@ from tkinter import messagebox
 import mysql.connector
 import pip
 from PIL import Image, ImageTk
+from PIL.FontFile import WIDTH
 
 from Conexion import conectar_db
 
@@ -69,6 +70,7 @@ def iniciar_juego(categoria):
         return
     letras_adivinadas = []
     intentos = 0
+    ImagenesAhorcado(intentos)
     actualizar_tablero()
     frame1.pack_forget()
     frame2.pack()
@@ -81,7 +83,7 @@ def verificar_letra():
     label_imagen = tk.Label(frame2, bg="#4E7C7E")
     label_imagen.pack(pady=10)
 
-    #PROBLEMAS CON LAS IMAGENES
+    #logica para mostrar imagenes
     imagenes = []
     for i in range(7):
         try:
@@ -105,20 +107,8 @@ def verificar_letra():
 
     if letra not in palabra:
         intentos += 1
-        label_imagen.config(image=imagenes[intentos]) # Actualiza la imagen
-
-    actualizar_tablero()
-
-    if intentos == 6:
-        messagebox.showinfo("Derrota", f"Perdiste. La palabra era: {palabra}")
-        actualizar_estadisticas(nombre_jugador, False)
-        reiniciar_juego()
-    elif all(letra in letras_adivinadas for letra in palabra):
-        messagebox.showinfo("Victoria", "Has adivinado la palabra.")
-        actualizar_estadisticas(nombre_jugador, True)
-        reiniciar_juego()
-
-
+  #      label_imagen.config(image=imagenes[intentos]) # Actualiza la imagen
+        ImagenesAhorcado(intentos)
 
     actualizar_tablero()
 
@@ -137,6 +127,37 @@ def actualizar_tablero():
     label_tablero.config(text=estado)
     label_intentos.config(text=f"Intentos: {intentos}/6")
 
+
+#funcion para mostrar imagenes
+def ImagenesAhorcado(intentos):
+
+    try:
+
+        if intentos == 0:
+            f"imagenes/Ahorcado00.png"
+
+        # Construir la ruta de la imagen automáticamente
+        ruta_imagen = f"imagenes/Ahorcado0{intentos}.png"
+
+        # Cargar y redimensionar la imagen
+        img = Image.open(ruta_imagen).resize((150, 150))
+
+        # Convertir a un objeto compatible con Tkinter
+        img_tk = ImageTk.PhotoImage(img)
+
+        # Mostrar la imagen en el label
+        label_imagen.config(image=img_tk)
+        label_imagen.image = img_tk  # Mantener referencia para evitar el recolector de basura
+
+
+
+    except FileNotFoundError:
+        # Mostrar un mensaje de error
+        messagebox.showerror("Error", f"No se encontró la imagen")
+        # Usar una imagen de error predeterminada (opcional)
+        img_tk = None
+
+
 # Función para reiniciar el juego
 def reiniciar_juego():
     frame2.pack_forget()
@@ -145,17 +166,17 @@ def reiniciar_juego():
 # Crear la ventana principal
 ventana = tk.Tk()
 ventana.title("El Ahorcado")
-ventana.geometry("400x400")
-ventana.configure(bg="#4E7C7E")
+ventana.geometry("400x500")
+ventana.configure(bg="#00e5fc")
 
 # Frame inicial (Frame 1)
-frame1 = tk.Frame(ventana, bg="#4E7C7E")
+frame1 = tk.Frame(ventana, bg="#00e5fc")
 frame1.pack()
 
-label_titulo = tk.Label(frame1, text="El Ahorcado", font=("Arial", 24, "bold"), bg="#4E7C7E", fg="black")
+label_titulo = tk.Label(frame1, text="El Ahorcado", font=("Arial", 24, "bold"), bg="#00e5fc", fg="black")
 label_titulo.pack(pady=10)
 
-label_nombre = tk.Label(frame1, text="Escribe tu nombre", bg="#4E7C7E", fg="black", font=("Arial", 12))
+label_nombre = tk.Label(frame1, text="Escribe tu nombre", bg="#00e5fc", fg="black", font=("Arial", 12))
 label_nombre.pack(pady=5)
 
 entry_nombre = tk.Entry(frame1, font=("Arial", 12))
@@ -172,44 +193,44 @@ def comenzar_juego(categoria):
     registrar_jugador(nombre_jugador)
     iniciar_juego(categoria)
 
-label_categoria = tk.Label(frame1, text="Elije una categoría", bg="#4E7C7E", fg="black", font=("Arial", 12))
+label_categoria = tk.Label(frame1, text="Elije una categoría", bg="#00e5fc", fg="black", font=("Arial", 12))
 label_categoria.pack(pady=10)
 
-boton_fruta = tk.Button(frame1, text="Frutas", bg="#4FC3F7",width=18, height=1, command=lambda: comenzar_juego("Frutas"))
+boton_fruta = tk.Button(frame1, text="Frutas", bg="#02c3ff",width=18, height=1, command=lambda: comenzar_juego("Frutas"))
 boton_fruta.pack(pady=5)
 
-boton_termino = tk.Button(frame1, text="Conceptos Informáticos", bg="#4FC3F7",width=18, height=1, command=lambda: comenzar_juego("Conceptos Informáticos"))
+boton_termino = tk.Button(frame1, text="Conceptos Informáticos", bg="#02c3ff",width=18, height=1, command=lambda: comenzar_juego("Conceptos Informáticos"))
 boton_termino.pack(pady=5)
 
-boton_nombres = tk.Button(frame1, text="Nombres", bg="#4FC3F7",width=18, height=1, command=lambda: comenzar_juego("Nombres"))
+boton_nombres = tk.Button(frame1, text="Nombres", bg="#02c3ff",width=18, height=1, command=lambda: comenzar_juego("Nombres"))
 boton_nombres.pack(pady=5)
 
-boton_salir = tk.Button(frame1, text="Salir", bg="#4FC3F7",width=18, height=1, command=ventana.quit)
+boton_salir = tk.Button(frame1, text="Salir", bg="#e42500",width=18, height=1, command=ventana.quit)
 boton_salir.pack(pady=10)
 
 # Frame del juego (Frame 2)
-frame2 = tk.Frame(ventana, bg="#4E7C7E")
+frame2 = tk.Frame(ventana, bg="#00e5fc")
 
-# Frame para mostrar la imagen
-label_imagen = tk.Label(frame2, bg="#4E7C7E", )
-label_imagen.pack(pady=10)
-
-label_titulo_juego = tk.Label(frame2, text="El Ahorcado", font=("Arial", 24, "bold"), bg="#4E7C7E", fg="black")
+label_titulo_juego = tk.Label(frame2, text="El Ahorcado", font=("Arial", 24, "bold"), bg="#00e5fc", fg="black")
 label_titulo_juego.pack(pady=10)
 
-label_tablero = tk.Label(frame2, text="", font=("Courier", 18, "bold"), bg="#4E7C7E", fg="white")
+label_tablero = tk.Label(frame2, text="", font=("Courier", 18, "bold"), bg="#00e5fc", fg="white")
 label_tablero.pack(pady=20)
+
+# Frame para mostrar la imagen
+label_imagen = tk.Label(frame2, bg="#e8feff")
+label_imagen.pack(pady=10)
 
 entry_letra = tk.Entry(frame2, font=("Arial", 12))
 entry_letra.pack(pady=5)
 
-boton_verificar = tk.Button(frame2, text="Verificar Letra", bg="#4FC3F7",width=18, height=1, command=verificar_letra)
+boton_verificar = tk.Button(frame2, text="Verificar Letra", bg="#02c3ff",width=18, height=1, command=verificar_letra)
 boton_verificar.pack(pady=10)
 
-label_intentos = tk.Label(frame2, text="Intentos: 0/6", bg="#4E7C7E", fg="white", font=("Arial", 12))
+label_intentos = tk.Label(frame2, text="Intentos: 0/6", bg="#00e5fc", fg="white", font=("Arial", 12))
 label_intentos.pack(pady=10)
 
-boton_volver = tk.Button(frame2, text="Volver", bg="#4FC3F7", width=18, height=1, command=reiniciar_juego)
+boton_volver = tk.Button(frame2, text="Volver", bg="#53f015", width=18, height=1, command=reiniciar_juego)
 boton_volver.pack(pady=10)
 
 ventana.mainloop()
