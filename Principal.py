@@ -1,11 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
 import mysql.connector
-import pip
 from PIL import Image, ImageTk
-from PIL.FontFile import WIDTH
-
 from Conexion import conectar_db
+import re
 
 # Variables globales
 palabra = ""
@@ -182,6 +180,14 @@ label_nombre.pack(pady=5)
 entry_nombre = tk.Entry(frame1, font=("Arial", 12))
 entry_nombre.pack(pady=5)
 
+#funcion para validar noimbre
+def validar_nombre(char):
+    """Valida que el nombre contenga solo letras."""
+    if re.match("^[A-Za-z]+$", char):  # Permite solo letras (mayúsculas o minúsculas)
+        return True
+    else:
+        messagebox.showwarning("Nombre inválido", "Solo se permiten letras.")
+        return False
 
 #metodo para iniciar
 def comenzar_juego(categoria):
@@ -190,6 +196,10 @@ def comenzar_juego(categoria):
     if not nombre_jugador:
         messagebox.showerror("Error", "Debes ingresar un nombre para jugar.")
         return
+    if not validar_nombre(nombre_jugador):
+        # Si el nombre no es válido, detenemos la ejecución.
+        return
+
     registrar_jugador(nombre_jugador)
     iniciar_juego(categoria)
 
