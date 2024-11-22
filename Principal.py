@@ -219,7 +219,7 @@ label_tablero.pack(pady=20)
 
 # Frame para mostrar la imagen
 label_imagen = tk.Label(frame2, bg="#e8feff")
-label_imagen.pack(pady=10)
+label_imagen.pack(pady=10, anchor="center")
 
 entry_letra = tk.Entry(frame2, font=("Arial", 12))
 entry_letra.pack(pady=5)
