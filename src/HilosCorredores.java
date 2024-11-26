@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class HilosCorredores implements Runnable {
 
@@ -27,7 +28,7 @@ public class HilosCorredores implements Runnable {
             finalPos.setVisible(false);
             personaje.setVisible(true);
 
-            for (int i = 50; i <= 500; i += 2) {
+            for (int i = 0; i <= 500; i += 2) {
                 delay = (int) (Math.random() * 8) + 2;
                 personaje.setLocation(i, personaje.getY());
                 Thread.sleep(delay);
@@ -36,7 +37,18 @@ public class HilosCorredores implements Runnable {
             personaje.setVisible(false);
             finalPos.setVisible(true);
             synchronized (HilosCorredores.class) { // Sincronización para actualizar la posición
-                finalPos.setText(nombre + " llegó en la posición " + posicion);
+
+                if (posicion == 1) {
+                    finalPos.setBounds(350, 80, 400, 50);  // Nave 1
+                } else if (posicion == 2) {
+                    finalPos.setBounds(350, 180, 400, 50);  // Nave 2
+                } else if (posicion == 3) {
+                    finalPos.setBounds(350, 280, 400, 50);  // Nave 3
+                } else if (posicion == 4) {
+                    finalPos.setBounds(350, 380, 400, 50);  // Nave 4
+                }
+                finalPos.setText(" La nave " + nombre + " llegó en la posición " + posicion);
+                finalPos.setForeground(Color.WHITE);
                 posicion++;
                 if (posicion>4){
                     posicion =1;
